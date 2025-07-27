@@ -1,5 +1,6 @@
 import pygame
 import sys
+import asteroid
 from constants import *
 from player import Player
 from asteroid import Asteroid
@@ -15,6 +16,8 @@ def main():
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
+
+    font = pygame.font.Font("DejaVuSansMono.ttf", 36)
 
     Player.containers = (updatable, drawable)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
@@ -33,14 +36,17 @@ def main():
         screen.fill((0, 0, 0))
         updatable.update(dt)
 
-        for asteroid in asteroids:
-            if player.collision_check(asteroid):
+        for ast in asteroids:
+            if player.collision_check(ast):
                 print("Game Over!")
                 sys.exit()
             for bullet in shots:
-                if bullet.collision_check(asteroid):
-                    asteroid.split()
+                if bullet.collision_check(ast):
+                    ast.split()
                     bullet.kill()
+        
+        score_text = font.render("Score: " + str(asteroid.score), True, (255, 255, 255))
+        screen.blit(score_text, (10, 10))
 
         for sprite in drawable:
             sprite.draw(screen)
